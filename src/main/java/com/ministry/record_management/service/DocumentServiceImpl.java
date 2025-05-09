@@ -1,5 +1,6 @@
 package com.ministry.record_management.service;
 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -8,6 +9,9 @@ import java.util.List;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +35,8 @@ public class DocumentServiceImpl implements DocumentService {
     private DepartmentRepository deptRepo;
 
     @Override
-    public List<Document> searchDocuments(String number, String title, String deptCode, DocumentType type,
-            SecurityClassification classification, WorkflowState state, LocalDate startDate, LocalDate endDate) {
+    public Page<Document> searchDocuments(String number, String title, String deptCode, DocumentType type,
+            SecurityClassification classification, WorkflowState state, LocalDate startDate, LocalDate endDate,Pageable pageable) {
 
         Specification<Document> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -73,7 +77,7 @@ public class DocumentServiceImpl implements DocumentService {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        return documentRepo.findAll(spec);
+        return documentRepo.findAll(spec,pageable);
     }
 
 }
